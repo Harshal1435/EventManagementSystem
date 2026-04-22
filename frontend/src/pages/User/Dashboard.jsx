@@ -1,121 +1,113 @@
+// src/pages/user/Dashboard.jsx
 import { useEffect, useState } from "react";
 import API from "../../api/axios";
 
 export default function UserDashboard() {
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
-  const [cartCount, setCartCount] = useState(0);
+  const [cart, setCart] = useState([]);
 
   useEffect(() => {
-    fetchUserData();
+    loadData();
   }, []);
 
-  const fetchUserData = async () => {
-    try {
-      // 👤 Get logged-in user
-      const userRes = await API.get("/auth/me");
-      console.log("USER:", userRes.data);
-      setUser(userRes.data.user);
+  const loadData = async () => {
+    const u = await API.get("/auth/me");
+    const o = await API.get("/orders/my");
+    const c = await API.get("/cart");
 
-      // 📦 Get user orders
-      const orderRes = await API.get("/orders/my-orders");
-      console.log("ORDERS:", orderRes.data);
-      setOrders(orderRes.data || []);
-
-      // 🛒 Get cart
-      const cartRes = await API.get("/cart");
-      console.log("CART:", cartRes.data);
-      setCartCount(cartRes.data?.items?.length || 0);
-
-    } catch (err) {
-      console.error("Dashboard error:", err.response?.data || err.message);
-    }
+    setUser(u.data.user);
+    setOrders(o.data);
+    setCart(c.data);
   };
 
-  // 🚪 Logout
-  const logout = async () => {
-    try {
-      await API.post("/auth/logout");
-      window.location.href = "/login";
-    } catch (err) {
-      console.error(err);
-    }
+  const removeFromCart = async (id) => {
+    await API.delete(`/cart/${id}`);
+    loadData();
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="p-6 bg-gray-100 min-h-screen">
 
       {/* HEADER */}
-      <div className="bg-white p-4 rounded shadow flex justify-between items-center mb-6">
-        <h1 className="text-xl font-bold">User Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">
+        User Dashboard
+      </h1>
 
-        <button
-          onClick={logout}
-          className="bg-red-500 text-white px-4 py-2 rounded"
-        >
-          Logout
-        </button>
+      {/* PROFILE CARD */}
+      <div className="bg-white rounded shadow p-5 mb-6">
+        <h2 className="text-xl font-semibold mb-3 text-gray-700">
+          Profile
+        </h2>
+        <p className="text-gray-800 font-medium">{user?.name}</p>
+        <p className="text-gray-500">{user?.email}</p>
       </div>
 
-      {/* USER INFO */}
-      <div className="bg-white p-4 rounded shadow mb-6">
-        <h2 className="text-lg font-semibold mb-2">Profile</h2>
+      {/* GRID LAYOUT */}
+      <div className="grid md:grid-cols-2 gap-6">
 
-        {user ? (
-          <div>
-            <p><b>Name:</b> {user.name}</p>
-            <p><b>Email:</b> {user.email}</p>
-            <p><b>Role:</b> {user.role}</p>
-          </div>
-        ) : (
-          <p>Loading user...</p>
-        )}
-      </div>
+        {/* CART */}
+        <div className="bg-white rounded shadow p-5">
+          <h2 className="text-xl font-semibold mb-4 text-gray-700">
+            Cart
+          </h2>
 
-      {/* STATS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          {cart.length === 0 ? (
+            <p className="text-gray-500">Cart is empty</p>
+          ) : (
+            cart.map((c) => (
+              <div
+                key={c._id}
+                className="flex justify-between items-center border-b py-2"
+              >
+                <span className="text-gray-800">
+                  {c.productName}
+                </span>
 
-        <div className="bg-white p-4 rounded shadow">
-          <p className="text-gray-500">Total Orders</p>
-          <h2 className="text-xl font-bold">{orders.length}</h2>
+                <button
+                  onClick={() => removeFromCart(c._id)}
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                >
+                  Remove
+                </button>
+              </div>
+            ))
+          )}
         </div>
 
-        <div className="bg-white p-4 rounded shadow">
-          <p className="text-gray-500">Cart Items</p>
-          <h2 className="text-xl font-bold">{cartCount}</h2>
+        {/* ORDERS */}
+        <div className="bg-white rounded shadow p-5">
+          <h2 className="text-xl font-semibold mb-4 text-gray-700">
+            Orders
+          </h2>
+
+          {orders.length === 0 ? (
+            <p className="text-gray-500">No orders yet</p>
+          ) : (
+            orders.map((o) => (
+              <div
+                key={o._id}
+                className="border-b py-2 flex justify-between items-center"
+              >
+                <span className="text-gray-700">
+                  ₹{o.total}
+                </span>
+
+                <span
+                  className={`px-2 py-1 text-sm rounded ${
+                    o.status === "delivered"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-yellow-100 text-yellow-700"
+                  }`}
+                >
+                  {o.status}
+                </span>
+              </div>
+            ))
+          )}
         </div>
 
       </div>
-
-      {/* ORDERS */}
-      <div className="bg-white p-4 rounded shadow">
-        <h2 className="text-lg font-semibold mb-4">My Orders</h2>
-
-        {orders.length > 0 ? (
-          <table className="w-full border">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border p-2">Order ID</th>
-                <th className="border p-2">Status</th>
-                <th className="border p-2">Amount</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order._id}>
-                  <td className="border p-2">{order._id}</td>
-                  <td className="border p-2">{order.status}</td>
-                  <td className="border p-2">{order.total}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>No orders found</p>
-        )}
-      </div>
-
     </div>
   );
 }
