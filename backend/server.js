@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import connectDB from "./config/db.js";
 
 // ROUTES
@@ -19,8 +20,20 @@ const app = express();
 connectDB();
 
 // 🧩 MIDDLEWARE
-app.use(cors());
+
+// ✅ CORS FIX (IMPORTANT for cookies)
+app.use(
+  cors({
+    origin: "http://localhost:5173", // frontend URL (change if needed)
+    credentials: true, // 🔥 REQUIRED for cookies
+  })
+);
+
+// ✅ PARSE JSON
 app.use(express.json());
+
+// ✅ COOKIE PARSER (for reading cookies)
+app.use(cookieParser());
 
 // 🌐 ROOT CHECK
 app.get("/", (req, res) => {
@@ -30,13 +43,13 @@ app.get("/", (req, res) => {
 // 🔐 AUTH
 app.use("/api/auth", authRoutes);
 
-// 🏪 PRODUCTS (Vendor + User)
+// 🏪 PRODUCTS
 app.use("/api/products", productRoutes);
 
-// 🛒 CART (User)
+// 🛒 CART
 app.use("/api/cart", cartRoutes);
 
-// 📦 ORDERS (User + Admin)
+// 📦 ORDERS
 app.use("/api/orders", orderRoutes);
 
 // 👨‍💼 ADMIN
@@ -53,7 +66,10 @@ app.use((req, res) => {
 // 🚨 GLOBAL ERROR HANDLER
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ msg: "Server Error" });
+  res.status(500).json({
+    msg: "Server Error",
+    error: process.env.NODE_ENV === "development" ? err.message : undefined,
+  });
 });
 
 // 🚀 START SERVER

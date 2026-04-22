@@ -3,19 +3,27 @@ import jwt from "jsonwebtoken";
 const auth = (roles = []) => {
   return (req, res, next) => {
     try {
-      const token = req.headers.authorization;
-      if (!token) return res.status(401).send("No token");
+      const header = req.headers.authorization;
 
-      const decoded = jwt.verify(token, "secret");
+      if (!header) {
+        return res.status(401).json({ msg: "No token" });
+      }
+
+      const token = header.split(" ")[1];
+
+      const decoded = jwt.verify(token, process.env.JWT_SECRET); // ✅ FIXED
+
       req.user = decoded;
 
+      // role check
       if (roles.length && !roles.includes(decoded.role)) {
-        return res.status(403).send("Forbidden");
+        return res.status(403).json({ msg: "Access denied" });
       }
 
       next();
-    } catch {
-      res.status(401).send("Invalid token");
+
+    } catch (err) {
+      res.status(401).json({ msg: "Invalid token" });
     }
   };
 };
