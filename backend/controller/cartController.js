@@ -9,6 +9,7 @@ export const addToCart = async (req, res) => {
 
     const product = await Product.findById(productId);
     if (!product) return res.status(404).json({ msg: "Product not found" });
+    console.log("Adding to cart:", { productId, quantity, productStatus: product.status });
 
     let cart = await Cart.findOne({ userId: req.user.id });
 

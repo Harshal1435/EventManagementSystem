@@ -56,7 +56,7 @@ export default function VendorItems() {
           </div>
 
           <button
-            onClick={() => navigate("/cart")}
+            onClick={() => navigate("/user/cart")}
             className="bg-white border border-lime-500 px-10 py-3 text-xl hover:bg-gray-100"
           >
             Cart
@@ -82,7 +82,7 @@ export default function VendorItems() {
                   <h3 className="text-2xl text-center">{product.name}</h3>
                   <p className="text-center mt-3 text-xl">Rs/- {product.price}</p>
                   <p className="text-center mt-2 capitalize">{product.status}</p>
-{console.log("Product status:", product)}
+{console.log("Product status:", product._id, product.status)}
                   <button
                     onClick={() => addToCart(product._id)}
                     className="w-full mt-5 bg-white text-black border border-lime-500 px-4 py-3 text-lg hover:bg-gray-100"

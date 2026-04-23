@@ -19,17 +19,20 @@ export default function Cart() {
       setLoading(true);
 
       const res = await API.get("/cart");
-      console.log("Cart API Response:", res.data);
+      console.log("Cart API Response:", res.data.cart.items);
+
+      let items = [];
 
       if (Array.isArray(res.data)) {
-        setCartItems(res.data);
+        items = res.data;
       } else if (Array.isArray(res.data?.items)) {
-        setCartItems(res.data.items);
+        items = res.data.items;
       } else if (Array.isArray(res.data?.cart)) {
-        setCartItems(res.data.cart);
-      } else {
-        setCartItems([]);
+        items = res.data.cart;
       }
+
+      console.log("Final cart items:", items);
+      setCartItems(res.data.cart.items);
     } catch (error) {
       console.error("Fetch cart error:", error);
       toast.error("Failed to load cart");
@@ -87,8 +90,8 @@ export default function Cart() {
 
       await API.post("/orders", {
         items: cartItems.map((item) => ({
-          productId: item.productId?._id || item.productId,
-          quantity: item.quantity,
+          productId: item.productId?._id || item.productId || item.product?._id || item.product,
+          quantity: item.quantity || item.qty || 1,
         })),
       });
 
@@ -112,9 +115,9 @@ export default function Cart() {
     if (!Array.isArray(cartItems)) return 0;
 
     return cartItems.reduce((sum, item) => {
-      const product = item.productId || {};
-      const price = Number(product.price || item.price || 0);
-      const quantity = Number(item.quantity || 1);
+      const product = item.productId || item.product || {};
+      const price = Number(product?.price || item?.price || 0);
+      const quantity = Number(item?.quantity || item?.qty || 1);
       return sum + price * quantity;
     }, 0);
   }, [cartItems]);
@@ -199,23 +202,23 @@ export default function Cart() {
             </div>
           ) : (
             <div className="space-y-6">
-              {cartItems.map((item) => {
-                const product = item.productId || {};
-                const price = Number(product.price || item.price || 0);
-                const quantity = Number(item.quantity || 1);
+              {cartItems.map((item, index) => {
+                const product = item.productId || item.product || {};
+                const price = Number(product?.price || item?.price || 0);
+                const quantity = Number(item?.quantity || item?.qty || 1);
                 const total = price * quantity;
 
                 return (
                   <div
-                    key={item._id}
+                    key={item._id || index}
                     className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 items-center"
                   >
                     {/* IMAGE */}
                     <div className="bg-[#4b74c7] text-white rounded-[22px] border border-[#365aa2] min-h-[110px] flex items-center justify-center overflow-hidden px-2">
-                      {product.image ? (
+                      {product?.image ? (
                         <img
                           src={product.image}
-                          alt={product.name || "Product"}
+                          alt={product?.name || "Product"}
                           className="w-full h-full object-cover rounded-[22px]"
                         />
                       ) : (
@@ -225,7 +228,7 @@ export default function Cart() {
 
                     {/* NAME */}
                     <div className="bg-[#4b74c7] text-white rounded-[22px] border border-[#365aa2] min-h-[110px] flex items-center justify-center text-center text-xl px-3">
-                      {product.name || "Product Name"}
+                      {product?.name || item?.name || "Product Name"}
                     </div>
 
                     {/* PRICE */}

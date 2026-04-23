@@ -177,7 +177,7 @@
 // export default App;
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
-
+import { Toaster } from "react-hot-toast";
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/Signup";
 
@@ -206,7 +206,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AuthProvider from "./context/AuthContext";
 
 function App() {
-  return (
+  return (<>
+ <Toaster position="top-right" reverseOrder={false} />
     <AuthProvider>
       <Routes>
         {/* AUTH */}
@@ -229,7 +230,7 @@ function App() {
               <MembershipPage />
             </ProtectedRoute>
           }
-        />
+          />
         <Route
           path="/admin/users"
           element={
@@ -237,7 +238,7 @@ function App() {
               <ManageUsers />
             </ProtectedRoute>
           }
-        />
+          />
         <Route
           path="/admin/vendors"
           element={
@@ -245,7 +246,7 @@ function App() {
               <ManageVendors />
             </ProtectedRoute>
           }
-        />
+          />
         <Route
           path="/admin/vendor-membership"
           element={
@@ -271,7 +272,7 @@ function App() {
               <InsertItemPage />
             </ProtectedRoute>
           }
-        />
+          />
         <Route
           path="/vendor/delete"
           element={
@@ -311,7 +312,7 @@ function App() {
               <ViewProductPage />
             </ProtectedRoute>
           }
-        />
+          />
         <Route
           path="/vendor/transaction"
           element={
@@ -319,7 +320,7 @@ function App() {
               <TransactionPage />
             </ProtectedRoute>
           }
-        />
+          />
 
         {/* USER */}
         <Route
@@ -329,7 +330,7 @@ function App() {
               <UserDashboard />
             </ProtectedRoute>
           }
-        />
+          />
         <Route
           path="/user/products"
           element={
@@ -337,7 +338,7 @@ function App() {
               <Products />
             </ProtectedRoute>
           }
-        />
+          />
         <Route
           path="/user/cart"
           element={
@@ -345,7 +346,7 @@ function App() {
               <Cart />
             </ProtectedRoute>
           }
-        />
+          />
         <Route
           path="/user/vendors/:category"
           element={
@@ -361,9 +362,10 @@ function App() {
               <VendorItems />
             </ProtectedRoute>
           }
-        />
+          />
       </Routes>
     </AuthProvider>
+   </>
   );
 }
 
