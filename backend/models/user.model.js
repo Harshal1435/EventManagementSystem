@@ -19,7 +19,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["admin", "vendor", "user"],
       default: "user"
-    }
+    },
+      category: {
+    type: String,
+    default: null,
+  },
   },
   { timestamps: true }
 );

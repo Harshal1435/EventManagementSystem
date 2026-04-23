@@ -3,12 +3,31 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 export const signup = async (req, res) => {
-  const { name, email, password, role } = req.body;
-  const hash = await bcrypt.hash(password, 10);
-  const user = await User.create({ name, email, password: hash, role });
-  res.json(user);
-};
+  try {
+    const { name, email, password, role, category } = req.body;
 
+    // 🔴 If role is vendor → category is required
+    if (role === "vendor" && !category) {
+      return res.status(400).json({
+        msg: "Category is required for vendor",
+      });
+    }
+
+    const hash = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      name,
+      email,
+      password: hash,
+      role,
+      category: role === "vendor" ? category : null,
+    });
+
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
 // export const login = async (req, res) => {
 //   const user = await User.findOne({ email: req.body.email });
 //   if (!user) return res.status(404).send("User not found");
@@ -56,6 +75,16 @@ export const login = async (req, res) => {
     });
 
     console.log("User logged in:", token);
+  } catch (err) {
+    res.status(500).json({ msg: "Server error" });
+  }
+};
+export const me = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) return res.status(404).json({ msg: "User not found" });
+    console.log("Authenticated user:", user);
+    res.json(user);
   } catch (err) {
     res.status(500).json({ msg: "Server error" });
   }

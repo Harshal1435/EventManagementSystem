@@ -6,13 +6,14 @@ const productSchema = new mongoose.Schema(
     price: Number,
     status: {
       type: String,
-      enum: ["available", "out-of-stock"],
-      default: "available"
+      enum: ["available", "requested", "sold"],
+      default: "available",
     },
     vendorId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
-    }
+      ref: "User",
+      required: true,
+    },
   },
   { timestamps: true }
 );
