@@ -2,16 +2,26 @@ import './App.css';
 import { Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Auth/Login";
-import Signup from "./pages/Auth/Signup";   // ✅ ADD THIS
+import Signup from "./pages/Auth/Signup"; 
+import AdminDashboard from './pages/Admin/AdminDashboard';  // ✅ ADD THIS
+import MembershipPage from "./pages/admin/MembershipPage";
+import ManageUsers from "./pages/admin/ManageUsers";
+import ManageVendors from "./pages/admin/ManageVendors";
+import VendorMembership from "./pages/admin/VendorMembership";
 
-import AdminDashboard from "./pages/Admin/Dashboard";
-import VendorDashboard from "./pages/Vendor/Dashboard";
 import UserDashboard from "./pages/User/Dashboard";
 
 import Products from "./pages/User/Products";
 import Cart from "./pages/User/Cart";
 
-import VendorProducts from "./pages/Vendor/Products";
+import VendorDashboard from "./pages/vendor/VendorDashboard";
+import InsertItemPage from "./pages/vendor/InsertItemPage";
+import DeleteItemPage from "./pages/vendor/DeleteItemPage";
+import AddNewItemPage from "./pages/vendor/AddNewItemPage";
+import ProductStatusPage from "./pages/vendor/ProductStatusPage";
+import RequestItemPage from "./pages/vendor/RequestItemPage";
+import ViewProductPage from "./pages/vendor/ViewProductPage";
+import TransactionPage from "./pages/vendor/TransactionPage";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthProvider from './context/AuthContext';
@@ -25,7 +35,7 @@ function App() {
       <Route path="/signup" element={<Signup />} /> {/* ✅ SIGNUP ROUTE */}
 
       {/* ADMIN */}
-      <Route
+     <Route
         path="/admin"
         element={
           <ProtectedRoute role="admin">
@@ -33,8 +43,42 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/admin/membership"
+        element={
+          <ProtectedRoute role="admin">
+            <MembershipPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/users"
+        element={
+          <ProtectedRoute role="admin">
+            <ManageUsers />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/vendors"
+        element={
+          <ProtectedRoute role="admin">
+            <ManageVendors />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/vendor-membership"
+        element={
+          <ProtectedRoute role="admin">
+            <VendorMembership />
+          </ProtectedRoute>
+        }
+      />
+
 
       {/* VENDOR */}
+     {/* Vendor */}
       <Route
         path="/vendor"
         element={
@@ -44,10 +88,58 @@ function App() {
         }
       />
       <Route
-        path="/vendor/products"
+        path="/vendor/insert"
         element={
           <ProtectedRoute role="vendor">
-            <VendorProducts />
+            <InsertItemPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/vendor/delete"
+        element={
+          <ProtectedRoute role="vendor">
+            <DeleteItemPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/vendor/add-new-item"
+        element={
+          <ProtectedRoute role="vendor">
+            <AddNewItemPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/vendor/product-status"
+        element={
+          <ProtectedRoute role="vendor">
+            <ProductStatusPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/vendor/request-item"
+        element={
+          <ProtectedRoute role="vendor">
+            <RequestItemPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/vendor/view-product"
+        element={
+          <ProtectedRoute role="vendor">
+            <ViewProductPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/vendor/transaction"
+        element={
+          <ProtectedRoute role="vendor">
+            <TransactionPage />
           </ProtectedRoute>
         }
       />
