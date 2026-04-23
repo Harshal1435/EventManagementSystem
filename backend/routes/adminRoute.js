@@ -3,25 +3,39 @@ import auth from "../middleware/auth.js";
 
 import {
   getUsers,
+  addUser,
   deleteUser,
+  getVendors,
+  addVendor,
+  deleteVendor,
+  searchVendors,
   getAllOrders,
+  getMemberships,
   addMembership,
   updateMembership,
-  deleteMembership
+  deleteMembership,
 } from "../controller/adminController.js";
 
 const router = express.Router();
 
 // USERS
 router.get("/users", auth(["admin"]), getUsers);
+router.post("/users", auth(["admin"]), addUser);
 router.delete("/users/:id", auth(["admin"]), deleteUser);
+
+// VENDORS
+router.get("/vendors", auth(["admin"]), getVendors);
+router.post("/vendors", auth(["admin"]), addVendor);
+router.delete("/vendors/:id", auth(["admin"]), deleteVendor);
+router.get("/vendors/search", auth(["admin"]), searchVendors);
 
 // ORDERS
 router.get("/orders", auth(["admin"]), getAllOrders);
 
 // MEMBERSHIP
-router.post("/membership", auth(["admin"]), addMembership);
-router.put("/membership/:id", auth(["admin"]), updateMembership);
-router.delete("/membership/:id", auth(["admin"]), deleteMembership);
+router.get("/memberships", auth(["admin"]), getMemberships);
+router.post("/memberships", auth(["admin"]), addMembership);
+router.put("/memberships/:id", auth(["admin"]), updateMembership);
+router.delete("/memberships/:id", auth(["admin"]), deleteMembership);
 
 export default router;
