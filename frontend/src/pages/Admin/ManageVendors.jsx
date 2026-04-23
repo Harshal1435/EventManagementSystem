@@ -7,13 +7,14 @@ export default function ManageVendors() {
   const navigate = useNavigate();
 
   const [vendors, setVendors] = useState([]);
-  const [activeSection, setActiveSection] = useState("vendorUpdate");
   const [loading, setLoading] = useState(false);
+  const [activeSection, setActiveSection] = useState("list");
 
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
+    category: "",
   });
 
   useEffect(() => {
@@ -34,8 +35,8 @@ export default function ManageVendors() {
 
       setVendors(data);
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to load vendors");
+      console.error("Fetch vendors error:", error.response?.data || error.message);
+      toast.error(error.response?.data?.msg || "Failed to load vendors");
       setVendors([]);
     } finally {
       setLoading(false);
@@ -43,8 +44,8 @@ export default function ManageVendors() {
   };
 
   const handleAddVendor = async () => {
-    if (!form.name || !form.email || !form.password) {
-      toast.error("Fill all fields");
+    if (!form.name || !form.email || !form.password || !form.category) {
+      toast.error("Please fill all fields");
       return;
     }
 
@@ -54,29 +55,33 @@ export default function ManageVendors() {
         role: "vendor",
       });
 
-      toast.success("Vendor added");
-      setForm({ name: "", email: "", password: "" });
+      toast.success("Vendor added successfully");
 
+      setForm({
+        name: "",
+        email: "",
+        password: "",
+        category: "",
+      });
+
+      setActiveSection("list");
       await fetchVendors();
-      setActiveSection("vendorUpdate");
     } catch (error) {
-      console.error(error);
+      console.error("Add vendor error:", error.response?.data || error.message);
       toast.error(error.response?.data?.msg || "Failed to add vendor");
     }
   };
 
-  const handleDeleteVendor = async (id) => {
-    const ok = window.confirm("Delete this vendor?");
-    if (!ok) return;
+  const deleteVendor = async (id) => {
+    if (!window.confirm("Delete vendor?")) return;
 
     try {
       await API.delete(`/admin/vendors/${id}`);
       toast.success("Vendor deleted");
-
       await fetchVendors();
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to delete vendor");
+      console.error("Delete vendor error:", error.response?.data || error.message);
+      toast.error(error.response?.data?.msg || "Failed to delete vendor");
     }
   };
 
@@ -91,77 +96,76 @@ export default function ManageVendors() {
     }
   };
 
-  const buttonClass =
-    "bg-[#f7f7f7] border-2 border-lime-500 rounded-xl text-black hover:bg-white transition";
-  const smallBtn = `${buttonClass} w-[135px] h-[42px] text-[17px]`;
-  const leftBtn = `${buttonClass} h-[42px] text-[17px] px-4`;
-
   return (
-    <div className="min-h-screen bg-[#d9d9d9] p-2 md:p-4">
-      <div className="w-full max-w-[720px] min-h-[310px] mx-auto bg-[#cfcfcf] border border-gray-400 relative px-4 py-4 md:px-6">
+    <div className="min-h-screen bg-gradient-to-br from-[#4f79c7] via-[#5d86d2] to-[#2c3e50] p-4 md:p-6">
+      <div className="max-w-6xl mx-auto bg-white/95 backdrop-blur rounded-3xl shadow-2xl border border-white/40 overflow-hidden">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-5 md:px-8 py-5 border-b bg-white/80">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+              Manage Vendors
+            </h1>
+            <p className="text-sm md:text-base text-gray-500 mt-1">
+              Add vendors, manage vendor accounts, and assign memberships
+            </p>
+          </div>
 
-        {/* Top Buttons */}
-        <button
-          onClick={() => navigate("/admin")}
-          className={`absolute top-4 left-4 md:left-8 w-[135px] h-[44px] text-[18px] ${buttonClass}`}
-        >
-          Home
-        </button>
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => navigate("/admin")}
+              className="px-5 py-2.5 rounded-xl border-2 border-lime-500 bg-white text-gray-800 font-medium hover:bg-lime-50 transition"
+            >
+              Home
+            </button>
 
-        <button
-          onClick={handleLogout}
-          className={`absolute top-4 right-4 md:right-8 w-[135px] h-[44px] text-[18px] ${buttonClass}`}
-        >
-          LogOut
-        </button>
-
-        {/* Wireframe Layout */}
-        <div className="pt-20">
-          <div className="flex flex-col md:flex-row gap-10 md:gap-16">
-
-            {/* Left Side */}
-            <div className="flex flex-col gap-14">
-              <button
-                onClick={() => setActiveSection("vendorUpdate")}
-                className={`${leftBtn} w-[180px]`}
-              >
-                Vendor Management
-              </button>
-            </div>
-
-            {/* Right Side */}
-            <div className="flex flex-col gap-3">
-              <button
-                onClick={() => setActiveSection("vendorAdd")}
-                className={smallBtn}
-              >
-                Add
-              </button>
-
-              <button
-                onClick={async () => {
-                  setActiveSection("vendorUpdate");
-                  await fetchVendors();
-                }}
-                className={smallBtn}
-              >
-                Update
-              </button>
-            </div>
+            <button
+              onClick={handleLogout}
+              className="px-5 py-2.5 rounded-xl border-2 border-red-400 bg-white text-gray-800 font-medium hover:bg-red-50 transition"
+            >
+              Logout
+            </button>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="mt-8">
+        {/* Section Buttons */}
+        <div className="px-5 md:px-8 py-5 border-b bg-slate-50">
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => setActiveSection("add")}
+              className={`px-5 py-2.5 rounded-xl font-medium transition ${
+                activeSection === "add"
+                  ? "bg-blue-600 text-white shadow"
+                  : "bg-white border text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              Add Vendor
+            </button>
 
-          {/* ADD VENDOR */}
-          {activeSection === "vendorAdd" && (
-            <div className="bg-white rounded-xl shadow p-5 mt-4">
-              <h2 className="text-xl font-semibold mb-4 text-center">
-                Add Vendor
+            <button
+              onClick={async () => {
+                setActiveSection("list");
+                await fetchVendors();
+              }}
+              className={`px-5 py-2.5 rounded-xl font-medium transition ${
+                activeSection === "list"
+                  ? "bg-blue-600 text-white shadow"
+                  : "bg-white border text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              Vendor List
+            </button>
+          </div>
+        </div>
+
+        {/* Add Vendor Form */}
+        {activeSection === "add" && (
+          <div className="p-5 md:p-8">
+            <div className="bg-white rounded-2xl border shadow-sm p-5 md:p-6">
+              <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-5 text-center">
+                Add New Vendor
               </h2>
 
-              <div className="grid md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input
                   type="text"
                   placeholder="Vendor Name"
@@ -169,7 +173,7 @@ export default function ManageVendors() {
                   onChange={(e) =>
                     setForm({ ...form, name: e.target.value })
                   }
-                  className="border p-3 rounded"
+                  className="w-full border p-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-400"
                 />
 
                 <input
@@ -179,7 +183,7 @@ export default function ManageVendors() {
                   onChange={(e) =>
                     setForm({ ...form, email: e.target.value })
                   }
-                  className="border p-3 rounded"
+                  className="w-full border p-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-400"
                 />
 
                 <input
@@ -189,66 +193,141 @@ export default function ManageVendors() {
                   onChange={(e) =>
                     setForm({ ...form, password: e.target.value })
                   }
-                  className="border p-3 rounded"
+                  className="w-full border p-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-400"
+                />
+
+                <input
+                  type="text"
+                  placeholder="Category (e.g. Food, Electronics)"
+                  value={form.category}
+                  onChange={(e) =>
+                    setForm({ ...form, category: e.target.value })
+                  }
+                  className="w-full border p-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
 
-              <div className="mt-5 text-center">
+              <div className="mt-6 text-center">
                 <button
                   onClick={handleAddVendor}
-                  className="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700"
+                  className="bg-green-600 text-white px-8 py-3 rounded-xl shadow hover:bg-green-700 transition"
                 >
                   Add Vendor
                 </button>
               </div>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* UPDATE / LIST */}
-          {activeSection === "vendorUpdate" && (
-            <div className="bg-white rounded-xl shadow p-5 mt-4 overflow-x-auto">
-              <h2 className="text-xl font-semibold mb-4 text-center">
+        {/* Vendor List */}
+        {activeSection === "list" && (
+          <div className="p-5 md:p-8">
+            <div className="bg-white rounded-2xl border shadow-sm p-5 md:p-6">
+              <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-5 text-center">
                 Vendor List
               </h2>
 
               {loading ? (
-                <p className="text-center text-gray-500">Loading...</p>
+                <p className="text-center text-gray-500">Loading vendors...</p>
               ) : vendors.length === 0 ? (
-                <p className="text-center text-gray-500">
-                  No vendors found
-                </p>
+                <p className="text-center text-gray-500">No vendors found</p>
               ) : (
-                <table className="w-full border">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="border p-3 text-left">Name</th>
-                      <th className="border p-3 text-left">Email</th>
-                      <th className="border p-3 text-left">Role</th>
-                      <th className="border p-3 text-left">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {vendors.map((item) => (
-                      <tr key={item._id}>
-                        <td className="border p-3">{item.name}</td>
-                        <td className="border p-3">{item.email}</td>
-                        <td className="border p-3">{item.role}</td>
-                        <td className="border p-3">
+                <>
+                  {/* Desktop Table */}
+                  <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full border rounded-xl overflow-hidden">
+                      <thead>
+                        <tr className="bg-gray-100 text-left">
+                          <th className="p-3 border">Name</th>
+                          <th className="p-3 border">Email</th>
+                          <th className="p-3 border">Category</th>
+                          <th className="p-3 border">Role</th>
+                          <th className="p-3 border">Action</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {vendors.map((v) => (
+                          <tr
+                            key={v._id}
+                            className="hover:bg-gray-50 transition"
+                          >
+                            <td className="p-3 border">{v.name}</td>
+                            <td className="p-3 border">{v.email}</td>
+                            <td className="p-3 border">{v.category || "-"}</td>
+                            <td className="p-3 border capitalize">
+                              {v.role || "vendor"}
+                            </td>
+                            <td className="p-3 border">
+                              <div className="flex gap-2 flex-wrap">
+                                <button
+                                  onClick={() =>
+                                    navigate(`/admin/membership?vendorId=${v._id}`)
+                                  }
+                                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+                                >
+                                  Membership
+                                </button>
+
+                                <button
+                                  onClick={() => deleteVendor(v._id)}
+                                  className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile Cards */}
+                  <div className="grid gap-4 md:hidden">
+                    {vendors.map((v) => (
+                      <div
+                        key={v._id}
+                        className="border rounded-2xl p-4 shadow-sm bg-gray-50"
+                      >
+                        <h3 className="text-lg font-semibold text-gray-800">
+                          {v.name}
+                        </h3>
+                        <p className="text-sm text-gray-600 mt-1">{v.email}</p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          <span className="font-medium">Category:</span>{" "}
+                          {v.category || "-"}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1 capitalize">
+                          <span className="font-medium">Role:</span>{" "}
+                          {v.role || "vendor"}
+                        </p>
+
+                        <div className="flex gap-2 mt-4 flex-wrap">
                           <button
-                            onClick={() => handleDeleteVendor(item._id)}
-                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                            onClick={() =>
+                              navigate(`/admin/membership?vendorId=${v._id}`)
+                            }
+                            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+                          >
+                            Membership
+                          </button>
+
+                          <button
+                            onClick={() => deleteVendor(v._id)}
+                            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
                           >
                             Delete
                           </button>
-                        </td>
-                      </tr>
+                        </div>
+                      </div>
                     ))}
-                  </tbody>
-                </table>
+                  </div>
+                </>
               )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

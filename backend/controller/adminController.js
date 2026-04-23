@@ -1,7 +1,6 @@
 import User from "../models/user.model.js";
 import Membership from "../models/Membership.model.js";
 import Order from "../models/Order.model.js";
-
 // =========================
 // USER MANAGEMENT
 // =========================
@@ -97,29 +96,30 @@ export const searchVendors = async (req, res) => {
 // ADD VENDOR
 export const addVendor = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, category } = req.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({ msg: "Name, email and password are required" });
+    if (!name || !email || !password || !category) {
+      return res.status(400).json({ msg: "All fields are required" });
     }
 
-    const existing = await User.findOne({ email });
-    if (existing) {
-      return res.status(400).json({ msg: "Vendor already exists" });
+    const exists = await User.findOne({ email });
+    if (exists) {
+      return res.status(400).json({ msg: "Email already exists" });
     }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const vendor = await User.create({
       name,
       email,
-      password,
+      password: hashedPassword,
       role: "vendor",
+      category,
     });
 
-    res.status(201).json({
-      msg: "Vendor added successfully",
-      vendor,
-    });
+    res.status(201).json(vendor);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ msg: "Failed to add vendor" });
   }
 };
@@ -153,45 +153,33 @@ export const getAllOrders = async (req, res) => {
 // =========================
 
 // GET ALL MEMBERSHIPS
+
+
+
+// GET ALL
 export const getMemberships = async (req, res) => {
   try {
-    const memberships = await Membership.find().lean();
+    const data = await Membership.find()
+      .populate("vendorId", "name email")
+      .sort({ createdAt: -1 });
 
-    const vendorIds = memberships.map((m) => m.vendorId).filter(Boolean);
-
-    const vendors = await User.find({ _id: { $in: vendorIds } })
-      .select("_id name email")
-      .lean();
-
-    const vendorMap = {};
-    vendors.forEach((vendor) => {
-      vendorMap[String(vendor._id)] = vendor;
-    });
-
-    const mergedMemberships = memberships.map((item) => ({
-      ...item,
-      vendor: vendorMap[String(item.vendorId)] || null,
-    }));
-
-    res.json(mergedMemberships);
+    res.json(data);
   } catch (error) {
     res.status(500).json({ msg: "Failed to fetch memberships" });
   }
 };
 
-// ADD MEMBERSHIP
+// ADD
 export const addMembership = async (req, res) => {
   try {
     const { vendorId, type, startDate, endDate } = req.body;
 
     if (!vendorId || !type || !startDate || !endDate) {
-      return res.status(400).json({ msg: "All membership fields are required" });
+      return res.status(400).json({ msg: "All fields required" });
     }
 
     const vendor = await User.findOne({ _id: vendorId, role: "vendor" });
-    if (!vendor) {
-      return res.status(404).json({ msg: "Vendor not found" });
-    }
+    if (!vendor) return res.status(404).json({ msg: "Vendor not found" });
 
     const data = await Membership.create({
       vendorId,
@@ -206,34 +194,16 @@ export const addMembership = async (req, res) => {
   }
 };
 
-// UPDATE MEMBERSHIP
+// UPDATE
 export const updateMembership = async (req, res) => {
   try {
     const { vendorId, type, startDate, endDate } = req.body;
 
-    if (!vendorId || !type || !startDate || !endDate) {
-      return res.status(400).json({ msg: "All membership fields are required" });
-    }
-
-    const vendor = await User.findOne({ _id: vendorId, role: "vendor" });
-    if (!vendor) {
-      return res.status(404).json({ msg: "Vendor not found" });
-    }
-
     const updated = await Membership.findByIdAndUpdate(
       req.params.id,
-      {
-        vendorId,
-        type,
-        startDate,
-        endDate,
-      },
+      { vendorId, type, startDate, endDate },
       { new: true }
     );
-
-    if (!updated) {
-      return res.status(404).json({ msg: "Membership not found" });
-    }
 
     res.json(updated);
   } catch (error) {
@@ -241,12 +211,12 @@ export const updateMembership = async (req, res) => {
   }
 };
 
-// DELETE MEMBERSHIP
+// DELETE
 export const deleteMembership = async (req, res) => {
   try {
     await Membership.findByIdAndDelete(req.params.id);
-    res.json({ msg: "Membership deleted" });
-  } catch (error) {
-    res.status(500).json({ msg: "Failed to delete membership" });
+    res.json({ msg: "Deleted" });
+  } catch {
+    res.status(500).json({ msg: "Delete failed" });
   }
 };

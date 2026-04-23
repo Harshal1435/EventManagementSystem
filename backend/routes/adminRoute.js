@@ -37,5 +37,4 @@ router.get("/memberships", auth(["admin"]), getMemberships);
 router.post("/memberships", auth(["admin"]), addMembership);
 router.put("/memberships/:id", auth(["admin"]), updateMembership);
 router.delete("/memberships/:id", auth(["admin"]), deleteMembership);
-
 export default router;
