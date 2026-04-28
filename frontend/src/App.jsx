@@ -1,371 +1,104 @@
-// import './App.css';
-// import { Routes, Route } from "react-router-dom";
-
-// import Login from "./pages/Auth/Login";
-// import Signup from "./pages/Auth/Signup"; 
-// import AdminDashboard from './pages/Admin/AdminDashboard';  // ✅ ADD THIS
-// import MembershipPage from "./pages/admin/MembershipPage";
-// import ManageUsers from "./pages/admin/ManageUsers";
-// import ManageVendors from "./pages/admin/ManageVendors";
-// import VendorMembership from "./pages/admin/VendorMembership";
-
-// import UserDashboard from "./pages/User/Dashboard";
-
-// import Products from "./pages/User/Products";
-// import Cart from "./pages/User/Cart";
-
-// import VendorDashboard from "./pages/vendor/VendorDashboard";
-// import InsertItemPage from "./pages/vendor/InsertItemPage";
-// import DeleteItemPage from "./pages/vendor/DeleteItemPage";
-// import AddNewItemPage from "./pages/vendor/AddNewItemPage";
-// import ProductStatusPage from "./pages/vendor/ProductStatusPage";
-// import RequestItemPage from "./pages/vendor/RequestItemPage";
-// import ViewProductPage from "./pages/vendor/ViewProductPage";
-// import TransactionPage from "./pages/vendor/TransactionPage";
-
-// import ProtectedRoute from "./components/ProtectedRoute";
-// import AuthProvider from './context/AuthContext';
-
-// function App() {
-//   return (
-//     <AuthProvider>
-//        <Routes>
-//       {/* AUTH */}
-//       <Route path="/" element={<Login />} />
-//       <Route path="/signup" element={<Signup />} /> {/* ✅ SIGNUP ROUTE */}
-
-//       {/* ADMIN */}
-//      <Route
-//         path="/admin"
-//         element={
-//           <ProtectedRoute role="admin">
-//             <AdminDashboard />
-//           </ProtectedRoute>
-//         }
-//       />
-//       <Route
-//         path="/admin/membership"
-//         element={
-//           <ProtectedRoute role="admin">
-//             <MembershipPage />
-//           </ProtectedRoute>
-//         }
-//       />
-//       <Route
-//         path="/admin/users"
-//         element={
-//           <ProtectedRoute role="admin">
-//             <ManageUsers />
-//           </ProtectedRoute>
-//         }
-//       />
-//       <Route
-//         path="/admin/vendors"
-//         element={
-//           <ProtectedRoute role="admin">
-//             <ManageVendors />
-//           </ProtectedRoute>
-//         }
-//       />
-//       <Route
-//         path="/admin/vendor-membership"
-//         element={
-//           <ProtectedRoute role="admin">
-//             <VendorMembership />
-//           </ProtectedRoute>
-//         }
-//       />
-
-
-//       {/* VENDOR */}
-//      {/* Vendor */}
-//       <Route
-//         path="/vendor"
-//         element={
-//           <ProtectedRoute role="vendor">
-//             <VendorDashboard />
-//           </ProtectedRoute>
-//         }
-//       />
-//       <Route
-//         path="/vendor/insert"
-//         element={
-//           <ProtectedRoute role="vendor">
-//             <InsertItemPage />
-//           </ProtectedRoute>
-//         }
-//       />
-//       <Route
-//         path="/vendor/delete"
-//         element={
-//           <ProtectedRoute role="vendor">
-//             <DeleteItemPage />
-//           </ProtectedRoute>
-//         }
-//       />
-//       <Route
-//         path="/vendor/add-item"
-//         element={
-//           <ProtectedRoute role="vendor">
-//             <AddNewItemPage />
-//           </ProtectedRoute>
-//         }
-//       />
-//       <Route
-//         path="/vendor/product-status"
-//         element={
-//           <ProtectedRoute role="vendor">
-//             <ProductStatusPage />
-//           </ProtectedRoute>
-//         }
-//       />
-//       <Route
-//         path="/vendor/request-item"
-//         element={
-//           <ProtectedRoute role="vendor">
-//             <RequestItemPage />
-//           </ProtectedRoute>
-//         }
-//       />
-//       <Route
-//         path="/vendor/view-product"
-//         element={
-//           <ProtectedRoute role="vendor">
-//             <ViewProductPage />
-//           </ProtectedRoute>
-//         }
-//       />
-//       <Route
-//         path="/vendor/transaction"
-//         element={
-//           <ProtectedRoute role="vendor">
-//             <TransactionPage />
-//           </ProtectedRoute>
-//         }
-//       />
-
-//       {/* USER */}
-//       <Route
-//         path="/user"
-//         element={
-//           <ProtectedRoute role="user">
-//             <UserDashboard />
-//           </ProtectedRoute>
-//         }
-//       />
-//       <Route
-//         path="/user/products"
-//         element={
-//           <ProtectedRoute role="user">
-//             <Products />
-//           </ProtectedRoute>
-//         }
-//       />
-//       <Route
-//         path="/user/cart"
-//         element={
-//           <ProtectedRoute role="user">
-//             <Cart />
-//           </ProtectedRoute>
-//         }
-//       />
-//     </Routes>
-//     </AuthProvider>
-//   );
-// }
-
-// export default App;
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+
+// Auth
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/Signup";
 
+// Admin
 import AdminDashboard from "./pages/Admin/AdminDashboard";
-import MembershipPage from "./pages/admin/MembershipPage";
-import ManageUsers from "./pages/admin/ManageUsers";
-import ManageVendors from "./pages/admin/ManageVendors";
-import VendorMembership from "./pages/admin/VendorMembership";
+import MembershipPage from "./pages/Admin/MembershipPage";
+import ManageUsers from "./pages/Admin/ManageUsers";
+import ManageVendors from "./pages/Admin/ManageVendors";
+import VendorMembership from "./pages/Admin/VendorMembership";
+import AdminEvents from "./pages/Admin/AdminEvents";
+import AdminBookings from "./pages/Admin/AdminBookings";
+import AdminOrders from "./pages/Admin/Orders";
 
+// User
 import UserDashboard from "./pages/User/Dashboard";
 import Products from "./pages/User/Products";
 import Cart from "./pages/User/Cart";
 import CategoryVendors from "./pages/User/CategoryVendors";
 import VendorItems from "./pages/User/VendorItems";
+import UserOrders from "./pages/User/Orders";
+import UserEvents from "./pages/User/Events";
+import EventDetail from "./pages/User/EventDetail";
+import UserBookings from "./pages/User/Bookings";
+import UserGuestList from "./pages/User/GuestList";
 
-import VendorDashboard from "./pages/vendor/VendorDashboard";
-import InsertItemPage from "./pages/vendor/InsertItemPage";
-import DeleteItemPage from "./pages/vendor/DeleteItemPage";
-import AddNewItemPage from "./pages/vendor/AddNewItemPage";
-import ProductStatusPage from "./pages/vendor/ProductStatusPage";
-import RequestItemPage from "./pages/vendor/RequestItemPage";
-import ViewProductPage from "./pages/vendor/ViewProductPage";
-import TransactionPage from "./pages/vendor/TransactionPage";
+// Vendor
+import VendorDashboard from "./pages/Vendor/VendorDashboard";
+import InsertItemPage from "./pages/Vendor/InsertItemPage";
+import DeleteItemPage from "./pages/Vendor/DeleteItemPage";
+import AddNewItemPage from "./pages/Vendor/AddNewItemPage";
+import ProductStatusPage from "./pages/Vendor/ProductStatusPage";
+import RequestItemPage from "./pages/Vendor/RequestItemPage";
+import ViewProductPage from "./pages/Vendor/ViewProductPage";
+import TransactionPage from "./pages/Vendor/TransactionPage";
+import VendorOrders from "./pages/Vendor/Orders";
+import VendorEventsPage from "./pages/Vendor/EventsPage";
+import CreateEventPage from "./pages/Vendor/CreateEventPage";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthProvider from "./context/AuthContext";
+import NotFound from "./pages/NotFound";
+
+const PR = ({ role, children }) => (
+  <ProtectedRoute role={role}>{children}</ProtectedRoute>
+);
 
 function App() {
-  return (<>
- <Toaster position="top-right" reverseOrder={false} />
-    <AuthProvider>
-      <Routes>
-        {/* AUTH */}
-        <Route path="/" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+  return (
+    <>
+      <Toaster position="top-right" reverseOrder={false} />
+      <AuthProvider>
+        <Routes>
+          {/* AUTH */}
+          <Route path="/" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
 
-        {/* ADMIN */}
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute role="admin">
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/membership"
-          element={
-            <ProtectedRoute role="admin">
-              <MembershipPage />
-            </ProtectedRoute>
-          }
-          />
-        <Route
-          path="/admin/users"
-          element={
-            <ProtectedRoute role="admin">
-              <ManageUsers />
-            </ProtectedRoute>
-          }
-          />
-        <Route
-          path="/admin/vendors"
-          element={
-            <ProtectedRoute role="admin">
-              <ManageVendors />
-            </ProtectedRoute>
-          }
-          />
-        <Route
-          path="/admin/vendor-membership"
-          element={
-            <ProtectedRoute role="admin">
-              <VendorMembership />
-            </ProtectedRoute>
-          }
-        />
+          {/* ── ADMIN ── */}
+          <Route path="/admin" element={<PR role="admin"><AdminDashboard /></PR>} />
+          <Route path="/admin/users" element={<PR role="admin"><ManageUsers /></PR>} />
+          <Route path="/admin/vendors" element={<PR role="admin"><ManageVendors /></PR>} />
+          <Route path="/admin/membership" element={<PR role="admin"><MembershipPage /></PR>} />
+          <Route path="/admin/vendor-membership" element={<PR role="admin"><VendorMembership /></PR>} />
+          <Route path="/admin/events" element={<PR role="admin"><AdminEvents /></PR>} />
+          <Route path="/admin/bookings" element={<PR role="admin"><AdminBookings /></PR>} />
+          <Route path="/admin/orders" element={<PR role="admin"><AdminOrders /></PR>} />
 
-        {/* VENDOR */}
-        <Route
-          path="/vendor"
-          element={
-            <ProtectedRoute role="vendor">
-              <VendorDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/vendor/insert"
-          element={
-            <ProtectedRoute role="vendor">
-              <InsertItemPage />
-            </ProtectedRoute>
-          }
-          />
-        <Route
-          path="/vendor/delete"
-          element={
-            <ProtectedRoute role="vendor">
-              <DeleteItemPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/vendor/add-item"
-          element={
-            <ProtectedRoute role="vendor">
-              <AddNewItemPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/vendor/product-status"
-          element={
-            <ProtectedRoute role="vendor">
-              <ProductStatusPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/vendor/request-item"
-          element={
-            <ProtectedRoute role="vendor">
-              <RequestItemPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/vendor/view-product"
-          element={
-            <ProtectedRoute role="vendor">
-              <ViewProductPage />
-            </ProtectedRoute>
-          }
-          />
-        <Route
-          path="/vendor/transaction"
-          element={
-            <ProtectedRoute role="vendor">
-              <TransactionPage />
-            </ProtectedRoute>
-          }
-          />
+          {/* ── VENDOR ── */}
+          <Route path="/vendor" element={<PR role="vendor"><VendorDashboard /></PR>} />
+          <Route path="/vendor/events" element={<PR role="vendor"><VendorEventsPage /></PR>} />
+          <Route path="/vendor/events/create" element={<PR role="vendor"><CreateEventPage /></PR>} />
+          <Route path="/vendor/events/:id/edit" element={<PR role="vendor"><CreateEventPage /></PR>} />
+          <Route path="/vendor/insert" element={<PR role="vendor"><InsertItemPage /></PR>} />
+          <Route path="/vendor/delete" element={<PR role="vendor"><DeleteItemPage /></PR>} />
+          <Route path="/vendor/add-item" element={<PR role="vendor"><AddNewItemPage /></PR>} />
+          <Route path="/vendor/view-product" element={<PR role="vendor"><ViewProductPage /></PR>} />
+          <Route path="/vendor/product-status" element={<PR role="vendor"><ProductStatusPage /></PR>} />
+          <Route path="/vendor/request-item" element={<PR role="vendor"><RequestItemPage /></PR>} />
+          <Route path="/vendor/transaction" element={<PR role="vendor"><TransactionPage /></PR>} />
+          <Route path="/vendor/orders" element={<PR role="vendor"><VendorOrders /></PR>} />
 
-        {/* USER */}
-        <Route
-          path="/user"
-          element={
-            <ProtectedRoute role="user">
-              <UserDashboard />
-            </ProtectedRoute>
-          }
-          />
-        <Route
-          path="/user/products"
-          element={
-            <ProtectedRoute role="user">
-              <Products />
-            </ProtectedRoute>
-          }
-          />
-        <Route
-          path="/user/cart"
-          element={
-            <ProtectedRoute role="user">
-              <Cart />
-            </ProtectedRoute>
-          }
-          />
-        <Route
-          path="/user/vendors/:category"
-          element={
-            <ProtectedRoute role="user">
-              <CategoryVendors />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/user/vendor-items/:vendorId"
-          element={
-            <ProtectedRoute role="user">
-              <VendorItems />
-            </ProtectedRoute>
-          }
-          />
-      </Routes>
-    </AuthProvider>
-   </>
+          {/* ── USER ── */}
+          <Route path="/user" element={<PR role="user"><UserDashboard /></PR>} />
+          <Route path="/user/events" element={<PR role="user"><UserEvents /></PR>} />
+          <Route path="/user/events/:id" element={<PR role="user"><EventDetail /></PR>} />
+          <Route path="/user/bookings" element={<PR role="user"><UserBookings /></PR>} />
+          <Route path="/user/guest-list" element={<PR role="user"><UserGuestList /></PR>} />
+          <Route path="/user/products" element={<PR role="user"><Products /></PR>} />
+          <Route path="/user/cart" element={<PR role="user"><Cart /></PR>} />
+          <Route path="/user/vendors/:category" element={<PR role="user"><CategoryVendors /></PR>} />
+          <Route path="/user/vendor-items/:vendorId" element={<PR role="user"><VendorItems /></PR>} />
+          <Route path="/user/orders" element={<PR role="user"><UserOrders /></PR>} />
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </AuthProvider>
+    </>
   );
 }
 

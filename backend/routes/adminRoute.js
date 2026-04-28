@@ -1,40 +1,32 @@
 import express from "express";
 import auth from "../middleware/auth.js";
-
 import {
-  getUsers,
-  addUser,
-  deleteUser,
-  getVendors,
-  addVendor,
-  deleteVendor,
-  searchVendors,
+  getUsers, addUser, deleteUser,
+  getVendors, addVendor, deleteVendor, searchVendors,
   getAllOrders,
-  getMemberships,
-  addMembership,
-  updateMembership,
-  deleteMembership,
+  getMemberships, addMembership, updateMembership, deleteMembership,
 } from "../controller/adminController.js";
 
 const router = express.Router();
 
-// USERS
-router.get("/users", auth(["admin"]), getUsers);
-router.post("/users", auth(["admin"]), addUser);
+// ── USERS ─────────────────────────────────────────────────
+router.get("/users",        auth(["admin"]), getUsers);
+router.post("/users",       auth(["admin"]), addUser);
 router.delete("/users/:id", auth(["admin"]), deleteUser);
 
-// VENDORS
-router.get("/vendors", auth(["admin"]), getVendors);
-router.post("/vendors", auth(["admin"]), addVendor);
+// ── VENDORS — static routes BEFORE /:id ──────────────────
+router.get("/vendors/search", auth(["admin"]), searchVendors);  // MUST be before /:id
+router.get("/vendors",        auth(["admin"]), getVendors);
+router.post("/vendors",       auth(["admin"]), addVendor);
 router.delete("/vendors/:id", auth(["admin"]), deleteVendor);
-router.get("/vendors/search", auth(["admin"]), searchVendors);
 
-// ORDERS
+// ── ORDERS ────────────────────────────────────────────────
 router.get("/orders", auth(["admin"]), getAllOrders);
 
-// MEMBERSHIP
-router.get("/memberships", auth(["admin"]), getMemberships);
-router.post("/memberships", auth(["admin"]), addMembership);
-router.put("/memberships/:id", auth(["admin"]), updateMembership);
+// ── MEMBERSHIPS — static routes BEFORE /:id ──────────────
+router.get("/memberships",        auth(["admin"]), getMemberships);
+router.post("/memberships",       auth(["admin"]), addMembership);
+router.put("/memberships/:id",    auth(["admin"]), updateMembership);
 router.delete("/memberships/:id", auth(["admin"]), deleteMembership);
+
 export default router;

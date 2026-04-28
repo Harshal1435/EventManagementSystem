@@ -2,11 +2,12 @@ import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
   {
-    name: String,
-    price: Number,
+    name: { type: String, required: true },
+    price: { type: Number, required: true },
     status: {
       type: String,
-      enum: ["available", "requested", "sold"],
+      // "available"/"active" = visible to users, "inactive"/"requested"/"sold" = hidden
+      enum: ["available", "active", "inactive", "requested", "sold"],
       default: "available",
     },
     vendorId: {

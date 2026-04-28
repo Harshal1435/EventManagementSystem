@@ -11,6 +11,10 @@ import cartRoutes from "./routes/cartRoute.js";
 import orderRoutes from "./routes/orderRoute.js";
 import adminRoutes from "./routes/adminRoute.js";
 import vendorRoutes from "./routes/venderRoute.js";
+import eventRoutes from "./routes/eventRoute.js";
+import bookingRoutes from "./routes/bookingRoute.js";
+import guestRoutes from "./routes/guestRoute.js";
+import uploadRoutes from "./routes/uploadRoute.js";
 
 dotenv.config();
 
@@ -60,13 +64,25 @@ app.use("/api/admin", adminRoutes);
 // 🏪 VENDOR
 app.use("/api/vendor", vendorRoutes);
 
+// 🎉 EVENTS
+app.use("/api/events", eventRoutes);
+
+// 🎟️ BOOKINGS
+app.use("/api/bookings", bookingRoutes);
+
+// 👥 GUESTS
+app.use("/api/guests", guestRoutes);
+
+// 📸 UPLOADS (Cloudinary)
+app.use("/api/upload", uploadRoutes);
+
 // ❌ 404 HANDLER
-app.use((req, res) => {
+app.use((_req, res) => {
   res.status(404).json({ msg: "Route not found" });
 });
 
 // 🚨 GLOBAL ERROR HANDLER
-app.use((err, req, res, next) => {
+app.use((err, _req, res, _next) => {
   console.error(err.stack);
   res.status(500).json({
     msg: "Server Error",

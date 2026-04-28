@@ -10,18 +10,15 @@ const auth = (roles = []) => {
       }
 
       const token = header.split(" ")[1];
-
-      const decoded = jwt.verify(token, process.env.JWT_SECRET); // ✅ FIXED
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       req.user = decoded;
 
-      // role check
       if (roles.length && !roles.includes(decoded.role)) {
         return res.status(403).json({ msg: "Access denied" });
       }
 
       next();
-
     } catch (err) {
       res.status(401).json({ msg: "Invalid token" });
     }

@@ -1,98 +1,78 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Store, ArrowRight } from "lucide-react";
+import DashboardLayout from "../../components/DashboardLayout";
 import API from "../../api/axios";
 import toast from "react-hot-toast";
+
+const gradients = [
+  "linear-gradient(135deg, #6366f1, #8b5cf6)",
+  "linear-gradient(135deg, #0ea5e9, #6366f1)",
+  "linear-gradient(135deg, #10b981, #0ea5e9)",
+  "linear-gradient(135deg, #f59e0b, #ef4444)",
+  "linear-gradient(135deg, #ec4899, #8b5cf6)",
+  "linear-gradient(135deg, #8b5cf6, #ec4899)",
+];
 
 export default function CategoryVendors() {
   const navigate = useNavigate();
   const { category } = useParams();
-
   const [vendors, setVendors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userName, setUserName] = useState("User");
 
   useEffect(() => {
+    API.get("/auth/me").then(r => setUserName(r.data?.name || "User")).catch(() => {});
     fetchVendors();
   }, [category]);
 
   const fetchVendors = async () => {
-    try {
-      setLoading(true);
-      const res = await API.get(`/user/vendors/${category}`);
-      setVendors(res.data || []);
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to load vendors");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    toast.success("Logged out successfully");
-    navigate("/");
+    try { setLoading(true); const res = await API.get(`/user/vendors/${category}`); setVendors(res.data || []); }
+    catch { toast.error("Failed to load vendors"); }
+    finally { setLoading(false); }
   };
 
   return (
-    <div className="min-h-screen bg-[#e6e6e6] p-4 md:p-6">
-      <div className="max-w-7xl mx-auto bg-[#cfcfcf] border border-gray-400 min-h-[600px] p-4 md:p-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <button
-            onClick={() => navigate("/user/dashboard")}
-            className="bg-white border border-lime-500 px-10 py-3 text-xl hover:bg-gray-100"
-          >
-            Home
-          </button>
-
-          <div className="bg-[#4b74c7] text-white rounded-lg border border-[#365aa2] px-10 py-4 text-2xl min-w-[250px] text-center capitalize">
-            Vendor &nbsp;&nbsp; {category}
-          </div>
-
-          <button
-            onClick={handleLogout}
-            className="bg-white border border-lime-500 px-10 py-3 text-xl hover:bg-red-100"
-          >
-            LogOut
-          </button>
-        </div>
-
-        <div className="mt-12">
-          {loading ? (
-            <p className="text-center text-xl">Loading vendors...</p>
-          ) : vendors.length === 0 ? (
-            <p className="text-center text-xl">No vendors found in this category</p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
-              {vendors.map((vendor, index) => (
-                <div
-                  key={vendor._id}
-                  className="w-[180px] min-h-[255px] bg-[#4b74c7] rounded-[28px] border border-[#365aa2] text-white flex flex-col items-center justify-between py-6 px-4 shadow"
-                >
-                  <div className="text-center">
-                    <h3 className="text-2xl font-medium">
-                      Vendor {index + 1}
-                    </h3>
-
-                    <p className="mt-8 text-xl">{vendor.name}</p>
-
-                    <p className="mt-4 text-sm break-all">
-                      {vendor.email}
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={() => navigate(`/user/vendor-items/${vendor._id}`)}
-                    className="bg-white text-black border border-lime-500 px-6 py-3 text-lg hover:bg-gray-100"
-                  >
-                    Shop Item
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+    <DashboardLayout role="user" userName={userName}>
+      <div className="mb-6">
+        <h2 className="text-xl font-bold text-slate-800 capitalize">{category} Vendors</h2>
+        <p className="text-slate-500 text-sm">{vendors.length} vendors in this category</p>
       </div>
-    </div>
+
+      {loading ? (
+        <div className="text-center py-16 text-slate-400">Loading vendors...</div>
+      ) : vendors.length === 0 ? (
+        <div className="card p-16 text-center">
+          <Store size={48} className="text-slate-200 mx-auto mb-3" />
+          <p className="text-slate-400">No vendors in this category</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {vendors.map((vendor, i) => (
+            <div key={vendor._id} className="card p-6 hover:shadow-lg transition group">
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl font-bold shrink-0"
+                  style={{ background: gradients[i % gradients.length] }}>
+                  {vendor.name?.charAt(0)?.toUpperCase()}
+                </div>
+                <div>
+                  <h3 className="font-bold text-slate-800">{vendor.name}</h3>
+                  <p className="text-slate-400 text-xs mt-0.5">{vendor.email}</p>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs bg-indigo-50 text-indigo-600 font-medium px-2.5 py-1 rounded-full capitalize">
+                  {vendor.category || category}
+                </span>
+                <button onClick={() => navigate(`/user/vendor-items/${vendor._id}`)}
+                  className="btn-primary flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold">
+                  Shop <ArrowRight size={12} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </DashboardLayout>
   );
 }
