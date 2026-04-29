@@ -26,7 +26,7 @@ connectDB();
 // ✅ CORS FIX
 app.use(
   cors({
-    origin: "https://event-management-system-i2dv.vercel.app/",
+    origin: "https://event-management-system-i2dv.vercel.app",
     credentials: true,
   })
 );
