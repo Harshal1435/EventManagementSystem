@@ -26,7 +26,7 @@ connectDB();
 // ✅ CORS FIX
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://event-management-system-kappa-six.vercel.app/",
     credentials: true,
   })
 );
