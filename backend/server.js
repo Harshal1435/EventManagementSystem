@@ -3,11 +3,12 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import path from "path";
+import fs from "fs";
+import { execSync } from "child_process";
 import { fileURLToPath } from "url";
 
 import connectDB from "./config/db.js";
 
-// ROUTES
 import userRoutes from "./routes/userRoute.js";
 import authRoutes from "./routes/auth.js";
 import productRoutes from "./routes/productRoutes.js";
@@ -24,14 +25,14 @@ dotenv.config();
 
 const app = express();
 
-// 🔧 Fix for __dirname (ES module)
+// ✅ ES module __dirname fix
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 🔗 CONNECT DATABASE
+// ✅ DB
 connectDB();
 
-// ✅ CORS (IMPORTANT for production)
+// ✅ CORS
 app.use(
   cors({
     origin:
@@ -42,15 +43,11 @@ app.use(
   })
 );
 
-// ✅ PARSE JSON / FORM DATA
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// ✅ COOKIE PARSER
 app.use(cookieParser());
 
-/* ================= API ROUTES ================= */
-
+// ✅ API routes
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
@@ -63,31 +60,55 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/guests", guestRoutes);
 app.use("/api/upload", uploadRoutes);
 
-// 🌐 Health check
 app.get("/api/health", (req, res) => {
   res.json({ status: "OK" });
 });
 
-/* ================= FRONTEND SERVE ================= */
+// ✅ Frontend path
+const frontendPath = path.join(__dirname, "../frontend");
+const frontendDistPath = path.join(frontendPath, "dist");
 
-const frontendPath = path.join(__dirname, "../frontend/dist");
+// ✅ Build frontend only if dist missing
+if (!fs.existsSync(path.join(frontendDistPath, "index.html"))) {
+  console.log("⚠️ frontend/dist/index.html not found. Building frontend...");
 
-// Serve static files
-app.use(express.static(frontendPath));
+  try {
+    execSync("npm install", {
+      cwd: frontendPath,
+      stdio: "inherit",
+    });
 
-// React Router fallback
-app.get("*", (req, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
+    execSync("npm run build", {
+      cwd: frontendPath,
+      stdio: "inherit",
+    });
+
+    console.log("✅ Frontend build created successfully");
+  } catch (error) {
+    console.error("❌ Frontend build failed:", error.message);
+  }
+}
+
+// ✅ Serve frontend
+app.use(express.static(frontendDistPath));
+
+// ✅ React Router fallback
+app.get(/.*/, (req, res, next) => {
+  const indexPath = path.join(frontendDistPath, "index.html");
+
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    next();
+  }
 });
 
-/* ================= ERROR HANDLING ================= */
-
-// ❌ 404
+// ✅ 404 handler
 app.use((_req, res) => {
   res.status(404).json({ msg: "Route not found" });
 });
 
-// 🚨 GLOBAL ERROR HANDLER
+// ✅ Error handler
 app.use((err, _req, res, _next) => {
   console.error(err.stack);
   res.status(500).json({
@@ -95,8 +116,6 @@ app.use((err, _req, res, _next) => {
     error: process.env.NODE_ENV === "development" ? err.message : undefined,
   });
 });
-
-/* ================= SERVER START ================= */
 
 const PORT = process.env.PORT || 5000;
 
