@@ -28,7 +28,7 @@ export default function VendorEventsPage() {
   const fetchEvents = async () => {
     try {
       setLoading(true);
-      const res = await API.get("/events/vendor/my");
+      const res = await API.get("/events/my");
       setEvents(res.data || []);
     } catch { toast.error("Failed to load events"); }
     finally { setLoading(false); }

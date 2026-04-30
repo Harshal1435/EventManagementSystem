@@ -81,7 +81,7 @@ export default function VendorOrders() {
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
         <div>
-          <h2 className="text-xl font-bold text-slate-800">Orders</h2>
+          <h2 className="text-xl font-bold text-slate-800">User Request</h2>
           <p className="text-slate-500 text-sm">{orders.length} total orders</p>
         </div>
         <button onClick={fetchOrders}

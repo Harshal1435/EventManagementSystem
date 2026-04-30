@@ -75,14 +75,14 @@ export default function AdminDashboard() {
   }, []);
 
   const statCards = [
-    { label: "Total Users", value: stats.users, icon: Users, color: "#6366f1", bg: "#eef2ff", path: "/admin/users" },
-    { label: "Total Vendors", value: stats.vendors, icon: Store, color: "#0ea5e9", bg: "#e0f2fe", path: "/admin/vendors" },
-    { label: "Total Events", value: stats.events, icon: CalendarDays, color: "#8b5cf6", bg: "#f5f3ff", path: "/admin/events" },
-    { label: "Upcoming Events", value: stats.upcomingEvents, icon: CalendarDays, color: "#10b981", bg: "#d1fae5", path: "/admin/events" },
-    { label: "Total Bookings", value: stats.bookings, icon: Ticket, color: "#ec4899", bg: "#fce7f3", path: "/admin/bookings" },
-    { label: "Total Orders", value: stats.orders, icon: ShoppingBag, color: "#f59e0b", bg: "#fef3c7", path: "/admin/bookings" },
-    { label: "Memberships", value: stats.memberships, icon: CreditCard, color: "#ef4444", bg: "#fee2e2", path: "/admin/membership" },
-    { label: "Revenue", value: `₹${stats.totalRevenue}`, icon: TrendingUp, color: "#10b981", bg: "#d1fae5", path: "/admin/bookings" },
+    { label: "Total Users",    value: stats.users,         icon: Users,       color: "#6366f1", bg: "#eef2ff", path: "/admin/users" },
+    { label: "Total Vendors",  value: stats.vendors,       icon: Store,       color: "#0ea5e9", bg: "#e0f2fe", path: "/admin/vendors" },
+    { label: "Total Events",   value: stats.events,        icon: CalendarDays,color: "#8b5cf6", bg: "#f5f3ff", path: "/admin/events" },
+    { label: "Upcoming Events",value: stats.upcomingEvents,icon: CalendarDays,color: "#10b981", bg: "#d1fae5", path: "/admin/events" },
+    { label: "Total Bookings", value: stats.bookings,      icon: Ticket,      color: "#ec4899", bg: "#fce7f3", path: "/admin/bookings" },
+    { label: "Total Orders",   value: stats.orders,        icon: ShoppingBag, color: "#f59e0b", bg: "#fef3c7", path: "/admin/orders" },
+    { label: "Memberships",    value: stats.memberships,   icon: CreditCard,  color: "#ef4444", bg: "#fee2e2", path: "/admin/membership" },
+    { label: "Revenue",        value: `₹${stats.totalRevenue}`, icon: TrendingUp, color: "#10b981", bg: "#d1fae5", path: "/admin/bookings" },
   ];
 
   const statusStyle = {
@@ -102,7 +102,7 @@ export default function AdminDashboard() {
         </div>
         <p className="text-indigo-200 text-sm font-medium mb-1">Welcome back,</p>
         <h2 className="text-3xl font-bold">{userName} 👋</h2>
-        <p className="text-indigo-200 text-sm mt-2">Here's your platform overview for today.</p>
+        <p className="text-indigo-200 text-sm mt-2">Maintenance Menu — Admin access only.</p>
         <div className="flex flex-wrap gap-4 mt-4">
           <div className="flex items-center gap-2">
             <Activity size={14} className="text-indigo-300" />

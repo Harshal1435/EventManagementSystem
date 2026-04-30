@@ -1,28 +1,21 @@
 import GuestList from "../models/GuestList.model.js";
 import Event from "../models/Event.model.js";
-import Booking from "../models/Booking.model.js";
 
 // ── ADD GUEST (user only) ─────────────────────────────────
 export const addGuest = async (req, res) => {
   try {
     const { eventId, name, email, phone, notes } = req.body;
-    if (!eventId || !name)
-      return res.status(400).json({ msg: "Event ID and guest name are required" });
+    if (!name?.trim())
+      return res.status(400).json({ msg: "Guest name is required" });
 
-    const event = await Event.findById(eventId);
-    if (!event) return res.status(404).json({ msg: "Event not found" });
-
-    // User must have an active booking (pending or confirmed) for this event
-    const booking = await Booking.findOne({
-      userId:  req.user.id,
-      eventId,
-      status:  { $in: ["pending", "confirmed"] },
-    });
-    if (!booking)
-      return res.status(403).json({ msg: "You must have a booking to add guests" });
+    // eventId is optional — guest can be added without linking to an event
+    if (eventId) {
+      const event = await Event.findById(eventId);
+      if (!event) return res.status(404).json({ msg: "Event not found" });
+    }
 
     const guest = await GuestList.create({
-      eventId,
+      eventId:     eventId || null,
       addedBy:     req.user.id,
       addedByRole: "user",
       name:  name.trim(),
@@ -39,7 +32,7 @@ export const addGuest = async (req, res) => {
   }
 };
 
-// ── GET MY GUESTS (user: all guests I added) ──────────────
+// ── GET MY GUESTS ─────────────────────────────────────────
 export const getMyGuests = async (req, res) => {
   try {
     const guests = await GuestList.find({ addedBy: req.user.id })
@@ -51,12 +44,9 @@ export const getMyGuests = async (req, res) => {
   }
 };
 
-// ── GET GUESTS FOR A SPECIFIC EVENT (user: only their own) ─
+// ── GET GUESTS FOR A SPECIFIC EVENT ──────────────────────
 export const getEventGuests = async (req, res) => {
   try {
-    const event = await Event.findById(req.params.eventId);
-    if (!event) return res.status(404).json({ msg: "Event not found" });
-
     const guests = await GuestList.find({
       eventId:  req.params.eventId,
       addedBy:  req.user.id,
@@ -69,12 +59,11 @@ export const getEventGuests = async (req, res) => {
   }
 };
 
-// ── UPDATE GUEST STATUS (user: only their own guests) ─────
+// ── UPDATE GUEST STATUS ───────────────────────────────────
 export const updateGuestStatus = async (req, res) => {
   try {
     const guest = await GuestList.findById(req.params.id);
     if (!guest) return res.status(404).json({ msg: "Guest not found" });
-
     if (guest.addedBy.toString() !== req.user.id)
       return res.status(403).json({ msg: "Unauthorized" });
 
@@ -86,12 +75,11 @@ export const updateGuestStatus = async (req, res) => {
   }
 };
 
-// ── DELETE GUEST (user: only their own guests) ────────────
+// ── DELETE GUEST ──────────────────────────────────────────
 export const deleteGuest = async (req, res) => {
   try {
     const guest = await GuestList.findById(req.params.id);
     if (!guest) return res.status(404).json({ msg: "Guest not found" });
-
     if (guest.addedBy.toString() !== req.user.id)
       return res.status(403).json({ msg: "Unauthorized" });
 

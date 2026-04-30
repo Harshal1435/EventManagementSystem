@@ -37,7 +37,7 @@ export default function GuestListPage() {
   useEffect(() => {
     API.get("/auth/me").then(r => setUserName(r.data?.name || "Vendor")).catch(() => {});
     // Load vendor's events for the "select event" dropdown in the add form
-    API.get("/events/vendor/my").then(r => setEvents(r.data || [])).catch(() => {});
+    API.get("/events/my").then(r => setEvents(r.data || [])).catch(() => {});
 
     if (eventId) {
       API.get(`/events/${eventId}`).then(r => setEvent(r.data)).catch(() => {});

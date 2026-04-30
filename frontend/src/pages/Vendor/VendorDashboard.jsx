@@ -24,7 +24,7 @@ export default function VendorDashboard() {
     API.get("/auth/me").then(r => setUserName(r.data?.name || "Vendor")).catch(() => {});
     API.get("/vendor/products").then(r => setProducts(r.data || [])).catch(() => {});
     API.get("/vendor/orders").then(r => setOrders(r.data?.orders || r.data || [])).catch(() => {});
-    API.get("/events/vendor/my").then(r => setEvents(r.data || [])).catch(() => {});
+    API.get("/events/my").then(r => setEvents(r.data || [])).catch(() => {});
   }, []);
 
   const activeProducts = products.filter(p => p.status === "active" || p.status === "available").length;

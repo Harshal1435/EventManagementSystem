@@ -23,7 +23,7 @@ export default function ViewProductPage() {
   return (
     <DashboardLayout role="vendor" userName={userName}>
       <div className="mb-6">
-        <h2 className="text-xl font-bold text-slate-800">My Products</h2>
+        <h2 className="text-xl font-bold text-slate-800">View Product</h2>
         <p className="text-slate-500 text-sm">{products.length} products in your store</p>
       </div>
 

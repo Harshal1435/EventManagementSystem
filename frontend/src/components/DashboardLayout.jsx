@@ -7,34 +7,40 @@ import {
 } from "lucide-react";
 
 const roleMenus = {
+  // ── ADMIN: Maintenance Menu (Admin access only) ───────
   admin: [
-    { label: "Dashboard",         icon: LayoutDashboard, path: "/admin" },
-    { label: "Manage Users",      icon: Users,           path: "/admin/users" },
-    { label: "Manage Vendors",    icon: Store,           path: "/admin/vendors" },
-    { label: "All Events",        icon: CalendarDays,    path: "/admin/events" },
-    { label: "All Bookings",      icon: Ticket,          path: "/admin/bookings" },
-    { label: "All Orders",        icon: ShoppingBag,     path: "/admin/orders" },
-    { label: "Memberships",       icon: CreditCard,      path: "/admin/membership" },
-    { label: "Vendor Membership", icon: CreditCard,      path: "/admin/vendor-membership" },
+    { label: "Dashboard",            icon: LayoutDashboard, path: "/admin" },
+    { label: "Maintain User",        icon: Users,           path: "/admin/users" },
+    { label: "Maintain Vendor",      icon: Store,           path: "/admin/vendors" },
+    { label: "Add Membership",       icon: CreditCard,      path: "/admin/membership" },
+    { label: "Update Membership",    icon: CreditCard,      path: "/admin/vendor-membership" },
+    { label: "All Events",           icon: CalendarDays,    path: "/admin/events" },
+    { label: "All Bookings",         icon: Ticket,          path: "/admin/bookings" },
+    { label: "All Orders",           icon: ShoppingBag,     path: "/admin/orders" },
   ],
+
+  // ── VENDOR: Main Page ─────────────────────────────────
   vendor: [
-    { label: "Dashboard",    icon: LayoutDashboard, path: "/vendor" },
-    { label: "My Events",    icon: CalendarDays,    path: "/vendor/events" },
-    { label: "Create Event", icon: Zap,             path: "/vendor/events/create" },
-    { label: "Your Items",   icon: Package,         path: "/vendor/insert" },
-    { label: "Add Product",  icon: Package,         path: "/vendor/add-item" },
-    { label: "My Products",  icon: Store,           path: "/vendor/view-product" },
-    { label: "Orders",       icon: ClipboardList,   path: "/vendor/orders" },
-    { label: "Transactions", icon: CreditCard,      path: "/vendor/transaction" },
+    { label: "Dashboard",       icon: LayoutDashboard, path: "/vendor" },
+    { label: "Your Item",       icon: Package,         path: "/vendor/insert" },
+    { label: "Add New Item",    icon: Zap,             path: "/vendor/add-item" },
+    { label: "Product Status",  icon: Store,           path: "/vendor/product-status" },
+    { label: "Request Item",    icon: ClipboardList,   path: "/vendor/request-item" },
+    { label: "View Product",    icon: Store,           path: "/vendor/view-product" },
+    { label: "Transaction",     icon: CreditCard,      path: "/vendor/transaction" },
+    { label: "User Request",    icon: ShoppingBag,     path: "/vendor/orders" },
+    { label: "My Events",       icon: CalendarDays,    path: "/vendor/events" },
   ],
+
+  // ── USER: User Portal ─────────────────────────────────
   user: [
-    { label: "Dashboard",     icon: LayoutDashboard, path: "/user" },
-    { label: "Vendor",        icon: Store,           path: "/user/products" },
-    { label: "Cart",          icon: ShoppingCart,    path: "/user/cart" },
-    { label: "Guest List",    icon: UserCheck,       path: "/user/guest-list" },
-    { label: "Order Status",  icon: ClipboardList,   path: "/user/orders" },
-    { label: "Browse Events", icon: CalendarDays,    path: "/user/events" },
-    { label: "My Bookings",   icon: Ticket,          path: "/user/bookings" },
+    { label: "Dashboard",    icon: LayoutDashboard, path: "/user" },
+    { label: "Vendor",       icon: Store,           path: "/user/products" },
+    { label: "Cart",         icon: ShoppingCart,    path: "/user/cart" },
+    { label: "Guest List",   icon: UserCheck,       path: "/user/guest-list" },
+    { label: "Order Status", icon: ClipboardList,   path: "/user/orders" },
+    { label: "Browse Events",icon: CalendarDays,    path: "/user/events" },
+    { label: "My Bookings",  icon: Ticket,          path: "/user/bookings" },
   ],
 };
 

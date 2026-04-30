@@ -19,31 +19,38 @@ const statusStyle = {
 
 export default function UserGuestList() {
   const navigate = useNavigate();
-  const [guests, setGuests]     = useState([]);
+  const [guests, setGuests]         = useState([]);
   const [bookedEvents, setBookedEvents] = useState([]);
-  const [loading, setLoading]   = useState(true);
-  const [userName, setUserName] = useState("User");
-  const [showForm, setShowForm] = useState(false);
-  const [search, setSearch]     = useState("");
+  const [loading, setLoading]       = useState(true);
+  const [userName, setUserName]     = useState("User");
+  const [showForm, setShowForm]     = useState(false);
+  const [search, setSearch]         = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [form, setForm] = useState({ eventId: "", name: "", email: "", phone: "", notes: "" });
 
   useEffect(() => {
     API.get("/auth/me").then(r => setUserName(r.data?.name || "User")).catch(() => {});
-    // Load bookings (pending or confirmed) so user can pick an event
+
+    // Load user's bookings to populate the event dropdown
     API.get("/bookings/my").then(r => {
-      const active = (r.data || []).filter(
-        b => (b.status === "confirmed" || b.status === "pending") && b.eventId && typeof b.eventId === "object"
-      );
-      // Deduplicate by event _id
+      const bookings = r.data || [];
+      // Keep pending + confirmed, deduplicate by event _id
       const seen = new Set();
-      const unique = active.filter(b => {
-        if (seen.has(b.eventId._id)) return false;
-        seen.add(b.eventId._id);
-        return true;
+      const events = [];
+      bookings.forEach(b => {
+        if (
+          (b.status === "confirmed" || b.status === "pending") &&
+          b.eventId &&
+          typeof b.eventId === "object" &&
+          !seen.has(b.eventId._id)
+        ) {
+          seen.add(b.eventId._id);
+          events.push(b.eventId);
+        }
       });
-      setBookedEvents(unique.map(b => b.eventId));
+      setBookedEvents(events);
     }).catch(() => {});
+
     fetchGuests();
   }, []);
 
@@ -90,13 +97,13 @@ export default function UserGuestList() {
     const matchSearch =
       g.name?.toLowerCase().includes(search.toLowerCase()) ||
       g.email?.toLowerCase().includes(search.toLowerCase()) ||
-      g.phone?.includes(search);
+      (g.phone || "").includes(search);
     const matchStatus = filterStatus === "all" || g.status === filterStatus;
     return matchSearch && matchStatus;
   });
 
   const stats = [
-    { label: "Total",     value: guests.length,                                    color: "#6366f1" },
+    { label: "Total",     value: guests.length,                                       color: "#6366f1" },
     { label: "Invited",   value: guests.filter(g => g.status === "invited").length,   color: "#3b82f6" },
     { label: "Confirmed", value: guests.filter(g => g.status === "confirmed").length, color: "#10b981" },
     { label: "Attended",  value: guests.filter(g => g.status === "attended").length,  color: "#8b5cf6" },
@@ -108,7 +115,7 @@ export default function UserGuestList() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-xl font-bold text-slate-800">My Guest List</h2>
+          <h2 className="text-xl font-bold text-slate-800">Guest List</h2>
           <p className="text-slate-500 text-sm">{guests.length} guests across your bookings</p>
         </div>
         <button onClick={() => setShowForm(!showForm)}
@@ -164,10 +171,10 @@ export default function UserGuestList() {
                 </div>
 
                 {[
-                  { key: "name",  placeholder: "Guest Name *",       type: "text"  },
-                  { key: "email", placeholder: "Email Address",       type: "email" },
-                  { key: "phone", placeholder: "Phone Number",        type: "tel"   },
-                  { key: "notes", placeholder: "Notes (optional)",    type: "text"  },
+                  { key: "name",  placeholder: "Guest Name *",    type: "text"  },
+                  { key: "email", placeholder: "Email Address",   type: "email" },
+                  { key: "phone", placeholder: "Phone Number",    type: "tel"   },
+                  { key: "notes", placeholder: "Notes (optional)",type: "text"  },
                 ].map(({ key, placeholder, type }) => (
                   <div key={key}>
                     <input type={type} placeholder={placeholder} value={form[key]}
@@ -204,7 +211,9 @@ export default function UserGuestList() {
           className="px-4 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 text-slate-800 appearance-none min-w-[140px]">
           <option value="all">All Status</option>
           {STATUS_OPTIONS.map(s => (
-            <option key={s} value={s} className="capitalize">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+            <option key={s} value={s} className="capitalize">
+              {s.charAt(0).toUpperCase() + s.slice(1)}
+            </option>
           ))}
         </select>
       </div>

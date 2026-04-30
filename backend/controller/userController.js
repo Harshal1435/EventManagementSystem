@@ -1,13 +1,25 @@
 import User from "../models/user.model.js";
 import Product from "../models/Product.model.js";
 
+// GET ALL VENDORS (for user browsing)
+export const getAllVendors = async (req, res) => {
+  try {
+    const vendors = await User.find({ role: "vendor" })
+      .select("name email category")
+      .sort({ name: 1 });
+    res.json(vendors);
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
+
 // GET VENDORS BY CATEGORY
 export const getVendorsByCategory = async (req, res) => {
   try {
     const { category } = req.params;
     const vendors = await User.find({
       role: "vendor",
-      category: { $regex: new RegExp(`^${category}$`, "i") },
+      category: { $regex: new RegExp("^" + category + "$", "i") },
     }).select("name email category");
     res.json(vendors);
   } catch (err) {

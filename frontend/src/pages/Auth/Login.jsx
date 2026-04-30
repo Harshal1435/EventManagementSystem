@@ -237,27 +237,7 @@ export default function Login() {
               </button>
             </div>
 
-            {/* Demo accounts */}
-            <div className="mt-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="flex-1 h-px bg-slate-100" />
-                <span className="text-slate-400 text-xs font-medium">Demo Accounts</span>
-                <div className="flex-1 h-px bg-slate-100" />
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                {DEMO_ACCOUNTS.map(({ role, email, color, bg, border }) => (
-                  <button
-                    key={role}
-                    onClick={() => setData({ email, password: "password123" })}
-                    className="py-2 px-3 rounded-xl text-xs font-semibold transition-all hover:scale-105"
-                    style={{ background: bg, border: `1px solid ${border}`, color }}
-                  >
-                    {role}
-                  </button>
-                ))}
-              </div>
-              <p className="text-slate-400 text-xs text-center mt-2">Click to auto-fill demo credentials</p>
-            </div>
+      
 
             {/* Sign up link */}
             <div className="mt-6 pt-5 border-t border-slate-100 text-center">

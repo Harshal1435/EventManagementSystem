@@ -74,45 +74,45 @@ export default function EventDetail() {
         <div className="lg:col-span-2 space-y-5">
           {/* Banner */}
           <div className="card overflow-hidden">
-            <div className="h-56 relative flex items-center justify-center"
+            <div className="h-48 sm:h-56 relative flex items-center justify-center"
               style={{ background: `linear-gradient(135deg, ${cc.color}22, ${cc.color}55)` }}>
               {event.image ? (
                 <img src={event.image} alt={event.title} className="w-full h-full object-cover absolute inset-0" />
               ) : (
-                <span className="text-8xl opacity-40">{catEmoji[event.category] || "🎉"}</span>
+                <span className="text-6xl sm:text-8xl opacity-40">{catEmoji[event.category] || "🎉"}</span>
               )}
-              <div className="absolute top-4 left-4">
-                <span className="px-3 py-1.5 rounded-full text-sm font-semibold capitalize"
+              <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
+                <span className="px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-semibold capitalize"
                   style={{ background: cc.bg, color: cc.color }}>
                   {event.category}
                 </span>
               </div>
-              <div className="absolute top-4 right-4">
-                <span className={`px-3 py-1.5 rounded-full text-sm font-semibold capitalize ${
+              <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
+                <span className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-semibold capitalize ${
                   event.status === "upcoming" ? "bg-emerald-100 text-emerald-700"
                   : event.status === "cancelled" ? "bg-red-100 text-red-700"
                   : "bg-amber-100 text-amber-700"
                 }`}>{event.status}</span>
               </div>
             </div>
-            <div className="p-6">
-              <h1 className="text-2xl font-bold text-slate-800">{event.title}</h1>
-              {event.description && <p className="text-slate-500 mt-2 leading-relaxed">{event.description}</p>}
+            <div className="p-4 sm:p-6">
+              <h1 className="text-xl sm:text-2xl font-bold text-slate-800">{event.title}</h1>
+              {event.description && <p className="text-slate-500 mt-2 leading-relaxed text-sm sm:text-base">{event.description}</p>}
 
-              <div className="grid sm:grid-cols-2 gap-4 mt-5">
+              <div className="grid sm:grid-cols-2 gap-3 sm:gap-4 mt-5">
                 {[
                   { icon: CalendarDays, label: "Date", value: new Date(event.date).toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" }) },
                   { icon: Clock, label: "Time", value: event.time },
                   { icon: MapPin, label: "Location", value: event.location },
                   { icon: Users, label: "Capacity", value: `${event.bookedCount || 0} / ${event.capacity} booked` },
                 ].map(({ icon: Icon, label, value }) => (
-                  <div key={label} className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl">
-                    <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-                      <Icon size={15} className="text-indigo-500" />
+                  <div key={label} className="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 bg-slate-50 rounded-xl">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
+                      <Icon size={14} className="text-indigo-500 sm:w-[15px] sm:h-[15px]" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-xs text-slate-400 font-medium">{label}</p>
-                      <p className="text-sm font-semibold text-slate-700 mt-0.5">{value}</p>
+                      <p className="text-xs sm:text-sm font-semibold text-slate-700 mt-0.5 break-words">{value}</p>
                     </div>
                   </div>
                 ))}
@@ -125,14 +125,14 @@ export default function EventDetail() {
                 </div>
               )}
 
-              <div className="mt-4 flex items-center justify-between p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl">
+              <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl">
                 <div>
                   <p className="text-xs text-slate-400">Organized by</p>
-                  <p className="font-semibold text-slate-700">{event.vendorId?.name || "Organizer"}</p>
+                  <p className="font-semibold text-slate-700 text-sm sm:text-base">{event.vendorId?.name || "Organizer"}</p>
                 </div>
-                <div className="text-right">
+                <div className="text-left sm:text-right">
                   <p className="text-xs text-slate-400">Price per seat</p>
-                  <p className="text-2xl font-bold text-indigo-600">{event.price > 0 ? `₹${event.price}` : "Free"}</p>
+                  <p className="text-xl sm:text-2xl font-bold text-indigo-600">{event.price > 0 ? `₹${event.price}` : "Free"}</p>
                 </div>
               </div>
             </div>
@@ -141,7 +141,7 @@ export default function EventDetail() {
 
         {/* Booking Form */}
         <div className="lg:col-span-1">
-          <div className="card p-6 sticky top-24">
+          <div className="card p-5 sm:p-6 lg:sticky lg:top-24">
             <div className="flex items-center gap-2 mb-5">
               <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
                 <Ticket size={16} className="text-indigo-600" />

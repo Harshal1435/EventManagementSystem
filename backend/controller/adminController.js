@@ -43,6 +43,27 @@ export const deleteUser = async (req, res) => {
   }
 };
 
+export const updateUser = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    if (!name || !email) return res.status(400).json({ msg: "Name and email are required" });
+
+    // Check if email is already taken by another user
+    const existingUser = await User.findOne({ email, _id: { $ne: req.params.id } });
+    if (existingUser) return res.status(400).json({ msg: "Email already exists" });
+
+    const updates = { name, email };
+    if (password && password.trim()) updates.password = await bcrypt.hash(password, 10);
+
+    const updated = await User.findByIdAndUpdate(req.params.id, updates, { new: true }).select("-password");
+    if (!updated) return res.status(404).json({ msg: "User not found" });
+    res.json(updated);
+  } catch (err) {
+    console.error("Update user error:", err);
+    res.status(500).json({ msg: "Failed to update user" });
+  }
+};
+
 // ══════════════════════════════════════════
 // VENDOR MANAGEMENT
 // ══════════════════════════════════════════
@@ -100,6 +121,27 @@ export const deleteVendor = async (req, res) => {
   }
 };
 
+export const updateVendor = async (req, res) => {
+  try {
+    const { name, email, category, password } = req.body;
+    if (!name || !email || !category) return res.status(400).json({ msg: "Name, email and category are required" });
+
+    // Check if email is already taken by another vendor
+    const existingVendor = await User.findOne({ email, _id: { $ne: req.params.id } });
+    if (existingVendor) return res.status(400).json({ msg: "Email already exists" });
+
+    const updates = { name, email, category };
+    if (password && password.trim()) updates.password = await bcrypt.hash(password, 10);
+
+    const updated = await User.findByIdAndUpdate(req.params.id, updates, { new: true }).select("-password");
+    if (!updated) return res.status(404).json({ msg: "Vendor not found" });
+    res.json(updated);
+  } catch (err) {
+    console.error("Update vendor error:", err);
+    res.status(500).json({ msg: "Failed to update vendor" });
+  }
+};
+
 // ══════════════════════════════════════════
 // ORDERS
 // ══════════════════════════════════════════
@@ -137,8 +179,38 @@ export const addMembership = async (req, res) => {
     const vendor = await User.findOne({ _id: vendorId, role: "vendor" });
     if (!vendor) return res.status(404).json({ msg: "Vendor not found" });
 
+    // Check if vendor already has a membership
+    const existingMembership = await Membership.findOne({ vendorId });
+    
+    if (existingMembership) {
+      // Update existing membership by extending the end date
+      const newStartDate = new Date(startDate);
+      const newEndDate = new Date(endDate);
+      const currentEndDate = new Date(existingMembership.endDate);
+      
+      // If the new membership starts after current end date, use new dates
+      // Otherwise, extend from current end date
+      if (newStartDate > currentEndDate) {
+        existingMembership.startDate = newStartDate;
+        existingMembership.endDate = newEndDate;
+      } else {
+        // Calculate duration to add
+        const durationToAdd = newEndDate - newStartDate;
+        existingMembership.endDate = new Date(currentEndDate.getTime() + durationToAdd);
+      }
+      
+      existingMembership.type = type;
+      await existingMembership.save();
+      
+      return res.status(200).json({ 
+        msg: "Membership updated successfully", 
+        data: existingMembership 
+      });
+    }
+
+    // Create new membership if none exists
     const data = await Membership.create({ vendorId, type, startDate, endDate });
-    res.status(201).json(data);
+    res.status(201).json({ msg: "Membership created successfully", data });
   } catch {
     res.status(500).json({ msg: "Failed to add membership" });
   }

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const guestSchema = new mongoose.Schema({
-  eventId:  { type: mongoose.Schema.Types.ObjectId, ref: "Event", required: true },
+  eventId:  { type: mongoose.Schema.Types.ObjectId, ref: "Event", required: false, default: null },
   addedBy:  { type: mongoose.Schema.Types.ObjectId, ref: "User",  required: true }, // user OR vendor who added
   addedByRole: { type: String, enum: ["user", "vendor", "admin"], default: "user" },
   name:   { type: String, required: true },

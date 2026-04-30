@@ -5,6 +5,18 @@
 
 body { background: #0f172a; }
 
+/* ══════════════════════════════════════════
+   RESPONSIVE UTILITIES
+══════════════════════════════════════════ */
+@media (max-width: 640px) {
+  html { font-size: 14px; }
+  .card { border-radius: 12px; }
+  .stat-card { padding: 16px; }
+}
+
+/* ══════════════════════════════════════════
+   GLASS EFFECTS
+══════════════════════════════════════════ */
 .glass {
   background: rgba(255,255,255,0.05);
   backdrop-filter: blur(12px);
@@ -24,26 +36,49 @@ body { background: #0f172a; }
   background-clip: text;
 }
 
+/* ══════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════ */
 .btn-primary {
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   color: white;
   border: none;
   transition: all 0.2s;
 }
-.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 8px 25px rgba(99,102,241,0.4); }
+.btn-primary:hover:not(:disabled) { 
+  opacity: 0.9; 
+  transform: translateY(-1px); 
+  box-shadow: 0 8px 25px rgba(99,102,241,0.4); 
+}
+.btn-primary:active:not(:disabled) { transform: translateY(0); }
+
+@media (max-width: 640px) {
+  .btn-primary { font-size: 0.875rem; padding: 0.625rem 1rem; }
+}
 
 .btn-danger {
   background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
   transition: all 0.2s;
 }
-.btn-danger:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-danger:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+.btn-danger:active:not(:disabled) { transform: translateY(0); }
 
+/* ══════════════════════════════════════════
+   CARDS
+══════════════════════════════════════════ */
 .card {
   background: white;
   border-radius: 16px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.06);
   border: 1px solid #f1f5f9;
+}
+
+@media (max-width: 640px) {
+  .card { 
+    border-radius: 12px; 
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  }
 }
 
 .sidebar-link {
@@ -71,6 +106,17 @@ body { background: #0f172a; }
 }
 .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
 
+@media (max-width: 640px) {
+  .stat-card { 
+    padding: 16px; 
+    border-radius: 12px;
+  }
+  .stat-card:hover { transform: none; }
+}
+
+/* ══════════════════════════════════════════
+   FORM ELEMENTS
+══════════════════════════════════════════ */
 input, select, textarea {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -80,7 +126,59 @@ input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
 }
 
+@media (max-width: 640px) {
+  input, select, textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* ══════════════════════════════════════════
+   TABLES - MOBILE RESPONSIVE
+══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  table { font-size: 0.8125rem; }
+  table th, table td { padding: 0.75rem 0.5rem; }
+  table th { font-size: 0.6875rem; }
+}
+
+/* ══════════════════════════════════════════
+   SCROLLBARS
+══════════════════════════════════════════ */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: #f1f5f9; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+@media (max-width: 640px) {
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+}
+
+/* ══════════════════════════════════════════
+   MOBILE TOUCH IMPROVEMENTS
+══════════════════════════════════════════ */
+@media (max-width: 640px) {
+  button, a, [role="button"] {
+    min-height: 44px; /* iOS touch target size */
+    min-width: 44px;
+  }
+  
+  /* Prevent text selection on buttons */
+  button, .btn-primary, .btn-danger {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+}
+
+/* ══════════════════════════════════════════
+   UTILITY CLASSES
+══════════════════════════════════════════ */
+.mobile-hidden { display: block; }
+@media (max-width: 640px) {
+  .mobile-hidden { display: none; }
+}
+
+.mobile-only { display: none; }
+@media (max-width: 640px) {
+  .mobile-only { display: block; }
+}

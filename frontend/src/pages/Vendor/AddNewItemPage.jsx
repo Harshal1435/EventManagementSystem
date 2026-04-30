@@ -64,7 +64,7 @@ export default function AddNewItemPage() {
     <DashboardLayout role="vendor" userName={userName}>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-xl font-bold text-slate-800">Products</h2>
+          <h2 className="text-xl font-bold text-slate-800">Add New Item</h2>
           <p className="text-slate-500 text-sm">{products.length} products in your store</p>
         </div>
       </div>
